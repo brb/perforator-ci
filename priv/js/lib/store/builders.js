@@ -1,6 +1,6 @@
-var common = require('./common');
+var common = require('../common');
 var bean = require('bean');
-var deep = require('./deep');
+var deep = require('../deep');
 
 exports.init = function(page, cb) {
     page.on('queue_size', function(_, queue_size) {
