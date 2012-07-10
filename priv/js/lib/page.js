@@ -5,7 +5,7 @@ var p = require('page');
 
 exports.create = function(socket) {
     var previousPath = null;
-    return {
+    var page = {
         start : function() {
             p({
                 click : true,
@@ -87,4 +87,15 @@ exports.create = function(socket) {
             p(path);
         }
     };
+    bean.add(page, 'page', function(from, to, params) {
+        if(params.length > 0) {
+            var projectId = parseInt(params[0], 10);
+            if(projectId !== page.projectId) {
+                page.projectId = projectId;
+                bean.fire(page, 'projectId');
+            }
+            params.shift();
+        }
+    });
+    return page;
 };
