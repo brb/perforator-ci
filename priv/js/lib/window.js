@@ -36,6 +36,9 @@ exports.getCookie = function(name) {
 exports.getPath = function() {
     return window.location.pathname;
 };
+exports.setHref = function(href) {
+    window.location.href = href;
+};
 exports.createSocket = function() {
     return new window.WebSocket('ws://' + window.location.host + '/websocket');
 };
