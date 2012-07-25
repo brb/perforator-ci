@@ -4,7 +4,7 @@ visi wrapinami į:
 
     {
         err : null | string,
-        msg : {},
+        msg : {} | Error,
         type : string
     }
 
