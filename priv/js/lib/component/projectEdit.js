@@ -54,8 +54,10 @@ exports.init = function(page, cb) {
         augment();
         bean.add(qwery('form')[0], 'submit', function(e) {
             var project = gather();
-            page.req('project/new', project, function(_, id) {
-                project.id = id;
+            page.req('project/new', project, function(err) {
+                if(err) {
+                    throw common.error(err);
+                }
                 bean.fire(page, 'projectAdded', [project]);
                 page.go('/' + project.id);
             });
