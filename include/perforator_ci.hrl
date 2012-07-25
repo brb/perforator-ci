@@ -4,15 +4,14 @@
 
 -record(project, {
     id :: perforator_ci_types:project_id(), % unique
+    info :: [perforator_ci_types:project_info()],
 
     repo_url :: perforator_ci_types:repo_url(),
     branch :: perforator_ci_types:branch(),
     repo_backend=git :: perforator_ci_types:repo_backend(),
 
     polling=on_demand :: perforator_ci_types:polling_strategy(),
-    build_instructions=[] :: list(),
-
-    info=[] :: list() % random information
+    build_instructions=[] :: list()
 }).
 
 -record(project_build, {

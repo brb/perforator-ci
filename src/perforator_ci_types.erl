@@ -4,6 +4,10 @@
 
 -export_type([
     project_id/0,
+    project_info/0,
+
+
+
     polling_strategy/0,
     build_instructions/0,
 
@@ -22,6 +26,12 @@
 %% ============================================================================
 
 -type project_id() :: binary().
+-type project_info() :: {polling_strategy, {time, integer()} | on_demand} | %
+    % 'time' in miliseconds!
+    {repo_url, list()} | {branch, list()} |
+    {repo_backend, perforator_git_backend} | {build_instructions, list()}.
+
+
 -type polling_strategy() :: {time, integer()} | on_demand. % Time is in ms!
 -type build_instructions() :: list().
 

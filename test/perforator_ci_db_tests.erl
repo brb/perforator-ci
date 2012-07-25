@@ -18,7 +18,7 @@ db_test_() ->
         end,
         fun (_) -> perforator_ci:stop() end,
         [
-            {"Create/update project", fun test_create_project/0},
+            {"Write project", fun test_write_project/0},
             {"Create build", fun test_create_build/0},
             {"Get test runs", fun test_get_test_runs/0}
         ]
@@ -26,39 +26,14 @@ db_test_() ->
 
 %% ============================================================================
 
-test_create_project() ->
-    ?assertEqual(
-        ok,
-        perforator_ci_db:create_project({
-            <<"1">>, "r", "b", git, on_demand, [], []})
-    ),
-    ?assertEqual(
-        ok,
-        perforator_ci_db:create_project({
-            <<"1">>, "r", "b", git, on_demand, [], []})
-    ),
-    ?assertEqual(
-        ok,
-        perforator_ci_db:create_project({
-            <<"2">>, "r", "b", git, on_demand, [], []})
-    ),
-    ?assertMatch(
-        #project{id= <<"1">>,
-            repo_url="r", branch="b", repo_backend=git,
-            polling=on_demand, build_instructions=[], info=[]},
-        perforator_ci_db:get_project(<<"1">>)
-    ),
-    ?assertMatch(
-        [#project{id= <<"1">>}, #project{id= <<"2">>}],
-        perforator_ci_db:get_projects()),
+test_write_project() ->
+    ?assertEqual(ok, perforator_ci_db:write_project(#project{id= <<"1">>})),
+    ?assertMatch(#project{id= <<"1">>}, perforator_ci_db:get_project(<<"1">>)),
 
-    ?assertEqual(
-        ok,
-        perforator_ci_db:update_project({
-            <<"1">>, "omg", "b", git, on_demand, [], []})
-    ),
+    ?assertEqual(ok,
+        perforator_ci_db:write_project(#project{id= <<"1">>, repo_url="r"})),
     ?assertMatch(
-        #project{id= <<"1">>, repo_url="omg"},
+        #project{id= <<"1">>, repo_url="r"},
         perforator_ci_db:get_project(<<"1">>)
     ).
 

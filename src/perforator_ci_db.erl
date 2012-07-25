@@ -9,8 +9,8 @@
 
 %% API
 -export([
-    create_project/1,
-    update_project/1,
+    write_project/1,
+
     get_project/1,
     get_projects/0,
     get_builds/1,
@@ -33,62 +33,10 @@
 %% API
 %% ============================================================================
 
-%% @doc Initialize a new project.
-%% Should be called before starting the project worker (process).
--spec create_project({
-        perforator_ci_types:id(), perforator_ci_types:repo_url(),
-        perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
-        perforator_ci_types:polling_strategy(),
-        perforator_ci_types:build_instructions(), list()}) -> ok.
-create_project({ID, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
-        Info}) ->
-    transaction(
-        fun () ->
-            case mnesia:read(project, ID) of
-                [#project{}] -> ok;
-                [] ->
-                    % Write teh project data
-                    ok = mnesia:write(
-                        #project{
-                            id = ID,
-                            repo_url = RepoUrl,
-                            branch = Branch,
-                            repo_backend = RepoBackend,
-                            polling = Polling,
-                            build_instructions = BuildInstr,
-                            info = Info
-                        })
-            end
-        end).
-
-%% @doc Updates project (only record in DB).
-%% @throws {project_not_found, I}.
--spec update_project({
-        perforator_ci_types:project_id(), perforator_ci_types:repo_url(),
-        perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
-        perforator_ci_types:polling_strategy(),
-        perforator_ci_types:build_instructions(), list()}) -> ok.
-update_project({ID, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
-        Info}) ->
-    transaction(
-        fun () ->
-            case mnesia:read(project, ID) of
-                [] ->
-                    throw({project_not_found, ID});
-                [#project{}] ->
-                    % update
-                    ok = mnesia:write(
-                        #project{
-                            id = ID,
-                            repo_url = RepoUrl,
-                            branch = Branch,
-                            repo_backend = RepoBackend,
-                            polling = Polling,
-                            build_instructions = BuildInstr,
-                            info = Info
-                        })
-            end
-        end).
+%% @doc Create/modify a project.
+-spec write_project(#project{}) -> ok.
+write_project(#project{}=P) ->
+    transaction(fun () -> ok = mnesia:write(P) end).
 
 %% @doc Creates new build
 -spec create_build({

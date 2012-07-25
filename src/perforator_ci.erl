@@ -48,8 +48,11 @@
 create_and_start_project({ID, RepoUrl, Branch, RepoBackend, Polling,
         BuildInstr, Info}) ->
     % Store and fetch an ID:
-    ok = perforator_ci_db:create_project({ID, RepoUrl, Branch, RepoBackend,
-        Polling, BuildInstr, Info}),
+    ok = perforator_ci_db:write_project(
+        #project{id=ID, repo_url=RepoUrl, branch=Branch,
+            repo_backend=RepoBackend, polling=Polling,
+            build_instructions=BuildInstr}),
+    
     % Clone project repo:
     RepoBackend:clone(RepoUrl, perforator_ci_utils:repo_path(ID)), 
     % Check, maybe project is already running, so there is no need to start a
