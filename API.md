@@ -232,7 +232,7 @@ Responsai wrapinami į:
     }
 
 ### Response
-{
+
     [{
         build_id: integer,
         duration : {
