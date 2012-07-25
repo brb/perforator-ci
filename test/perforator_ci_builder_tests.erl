@@ -141,11 +141,13 @@ test_real_workflow() ->
     ok = perforator_ci:start_project(
         #project{
             id = <<"1">>,
-            repo_url = ?REPO,
-            branch = "origin/master",
-            repo_backend = perforator_ci_git,
-            polling = {time, 50},
-            build_instructions = ["echo omg"]
+            info = [
+                {repo_url, ?REPO},
+                {branch, "origin/master"},
+                {repo_backend, perforator_ci_git},
+                {polling, {time, 50}},
+                {build_instructions, ["echo omg"]}
+            ]
         }),
     timer:sleep(200),
 
@@ -162,11 +164,13 @@ test_real_workflow() ->
         perforator_ci:start_project(
             #project{
                 id = <<"2">>,
-                repo_url = ?REPO,
-                branch = "origin/master",
-                repo_backend = perforator_ci_git,
-                polling = {time, 50},
-                build_instructions = ["fail fail fail"]
+                info = [
+                    {repo_url, ?REPO},
+                    {branch, "origin/master"},
+                    {repo_backend, perforator_ci_git},
+                    {polling, {time, 50}},
+                    {build_instructions, ["fail fail fail"]}
+                ]
             }),
     timer:sleep(300),
 

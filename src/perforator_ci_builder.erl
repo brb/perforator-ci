@@ -233,15 +233,15 @@ enqueue({_, _, #project_build{id=BuildID}}=Item, Q) ->
 
 %% @doc Run a job.
 %% @throws perf_test_not_found.
-run_build({_Pid, #project{id=ProjectID, repo_url=RepoUrl,
-        repo_backend=Mod, build_instructions=Instructions},
+run_build({_Pid, #project{id=ProjectID, info=I}, 
         #project_build{commit_id=CommitID}}) ->
+    Mod = proplists:get_value(repo_backend, I),
     % Check if repo exist. If not, clone it
     RepoDir = repo_path(ProjectID),
     case filelib:is_dir(RepoDir) of
         true -> ok;
         false ->
-            ok = Mod:clone(RepoUrl, RepoDir)
+            ok = Mod:clone(proplists:get_value(repo_url, I), RepoDir)
     end,
 
     % Fetch and checkout
@@ -261,7 +261,7 @@ run_build({_Pid, #project{id=ProjectID, repo_url=RepoUrl,
                     throw({internal_error, C})
             end
         end,
-        Instructions
+        proplists:get_value(build_instructions, I, [])
     ),
 
     % Find and return `perforator` statistics.

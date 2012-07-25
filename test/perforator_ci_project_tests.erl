@@ -43,18 +43,22 @@ test_start_project() ->
     ok = perforator_ci:start_project(
         #project{
             id = <<"1">>,
-            repo_url = ?REPO,
-            branch = "origin/master",
-            repo_backend = perforator_ci_git,
-            polling = {time, 5000}
+            info = [
+                {repo_url, ?REPO},
+                {branch, "origin/master"},
+                {repo_backend,  perforator_ci_git},
+                {polling, {time, 5000}}
+            ]
         }),
     ok = perforator_ci:start_project(
         #project{
             id = <<"1">>,
-            repo_url = ?REPO,
-            branch = "origin/master",
-            repo_backend = perforator_ci_git,
-            polling = {time, 5000}
+            info = [
+                {repo_url, ?REPO},
+                {branch, "origin/master"},
+                {repo_backend,  perforator_ci_git},
+                {polling, {time, 5000}}
+            ]
         }),
 
     ?assertMatch(
@@ -88,10 +92,12 @@ test_ping_and_build() ->
     ok = perforator_ci:start_project(
         #project{
             id = <<"1">>,
-            repo_url = ?REPO,
-            branch = "origin/master",
-            repo_backend = perforator_ci_git,
-            polling = {time, 50}
+            info = [
+                {repo_url, ?REPO},
+                {branch, "origin/master"},
+                {repo_backend, perforator_ci_git},
+                {polling, {time, 50}}
+            ]
         }),
     timer:sleep(100),
 

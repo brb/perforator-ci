@@ -28,11 +28,15 @@ from(project_new, {Data}) ->
 
     #project{
         id = proplists:get_value(<<"id">>, Data),
-        repo_url = binary_to_list(proplists:get_value(<<"repo_url">>, Data)),
-        branch = binary_to_list(proplists:get_value(<<"branch">>, Data)),
-        repo_backend = perforator_ci_git, % @todo clean dirty hack
-        polling = Polling,
-        build_instructions = BuildInstr
+        info = [
+            {repo_url, 
+                binary_to_list(proplists:get_value(<<"repo_url">>, Data))},
+            {branch,
+                binary_to_list(proplists:get_value(<<"branch">>, Data))},
+            {repo_backend, perforator_ci_git}, % @todo clean dirty hack
+            {polling, Polling},
+            {build_instructions, BuildInstr}
+        ]
     };
 
 from(project_update, {Data}) ->
@@ -69,19 +73,19 @@ to(project_new, ProjectID) ->
 to(project_update, _) ->
     null;
 
-to(project, #project{id=ID, repo_url=RepoURL, branch=Branch,
-        polling=Polling, build_instructions=BuildInstr}) ->
-    Polling1 = case Polling of
+to(project, #project{id=ID, info=Info}) ->
+    Polling1 = case proplists:get_value(polling, Info) of
         on_demand -> ?BIN(ondemand);
         {time, N} -> {[{time, N}]}
     end,
-    BuildInstr1 = [?BIN(I) || I <- BuildInstr],
+    BuildInstr1 = [?BIN(I) ||
+        I <- proplists:get_value(build_instructions, Info), []],
 
     {[
         {id, ID},
-        {repo_url, ?BIN(RepoURL)},
-        {branch, ?BIN(Branch)},
-        {polling_strategy, Polling1},
+        {repo_url, ?BIN(proplists:get_value(repo_url, Info))},
+        {branch, ?BIN(proplists:get_value(branch, Info))},
+        {polling_strategy, proplists:get_value(polling, Info)},
         {build_instructions, BuildInstr1}
     ]};
 

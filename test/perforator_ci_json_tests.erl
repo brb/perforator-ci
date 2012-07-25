@@ -25,11 +25,13 @@ from_project_new_test() ->
     ?assertMatch(
         #project{
             id = <<"id">>,
-            repo_url = "url",
-            branch = "branch",
-            repo_backend = perforator_ci_git,
-            polling = {time, 10},
-            build_instructions = ["one", "two"]
+            info = [
+                {repo_url, "url"},
+                {branch, "branch"},
+                {repo_backend, perforator_ci_git},
+                {polling, {time, 10}},
+                {build_instructions, ["one", "two"]}
+            ]
         },
         from(project_new, dec(JSON))).
 
@@ -50,9 +52,9 @@ to_build_test() ->
     JSON = perforator_ci_json:to(build, #project_build{info=Data}),
     _Enc = jiffy:encode(JSON). %% it happens -- good enough.
 
-to_test_runs_test() ->
+to_test_builds_test() ->
     Data = [{1,[{failures,1},{duration,[{min,3},{max,4},{mean,6}]}]}],
-    JSON = perforator_ci_json:to(test_runs, Data),
+    JSON = perforator_ci_json:to(test_builds, Data),
     _Enc = jiffy:encode(JSON). %% it happens -- good enough.
 
 %% ============================================================================

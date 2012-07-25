@@ -20,7 +20,7 @@ db_test_() ->
         [
             {"Write project", fun test_write_project/0},
             {"Create build", fun test_create_build/0},
-            {"Get test runs", fun test_get_test_runs/0}
+            {"Get test runs", fun test_get_test_builds/0}
         ]
     }.
 
@@ -30,10 +30,13 @@ test_write_project() ->
     ?assertEqual(ok, perforator_ci_db:write_project(#project{id= <<"1">>})),
     ?assertMatch(#project{id= <<"1">>}, perforator_ci_db:get_project(<<"1">>)),
 
-    ?assertEqual(ok,
-        perforator_ci_db:write_project(#project{id= <<"1">>, repo_url="r"})),
+    ?assertEqual(
+        ok,
+        perforator_ci_db:write_project(
+            #project{id= <<"1">>, info=[{repo_url, "r"}]})
+    ),
     ?assertMatch(
-        #project{id= <<"1">>, repo_url="r"},
+        #project{id= <<"1">>, info=[{repo_url, "r"}]},
         perforator_ci_db:get_project(<<"1">>)
     ).
 
@@ -73,7 +76,7 @@ test_create_build() ->
         [#project_build{id=4}],
         perforator_ci_db:get_unfinished_builds(666)).
 
-test_get_test_runs() ->
+test_get_test_builds() ->
         ?assertMatch(
             #project_build{id=1, local_id=1},
             perforator_ci_db:create_build({42, 123, <<"cid0">>, []})),
@@ -92,7 +95,7 @@ test_get_test_runs() ->
         }]}]}],
         ?assertEqual(ok, perforator_ci_db:finish_build(1, Data, true)),
         timer:sleep(100),
-        Results = perforator_ci_db:get_test_runs(42, <<"test_suite_1">>,
+        Results = perforator_ci_db:get_test_builds(42, <<"test_suite_1">>,
             <<"test_case_1">>),
         ?assertNotEqual([], Results).
 

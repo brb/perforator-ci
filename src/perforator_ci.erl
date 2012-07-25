@@ -40,11 +40,13 @@
 
 %% @doc Stores project in DB and starts project handler process.
 -spec start_project(#project{}) -> ok.
-start_project(#project{id=ID, repo_url=RUrl, repo_backend=Mod}=P) ->
+start_project(#project{id=ID, info=I}=P) ->
     % Store project in DB:
     ok = perforator_ci_db:write_project(P),
     % Clone project repo:
-    Mod:clone(RUrl, perforator_ci_utils:repo_path(ID)), 
+    (proplists:get_value(repo_backend, I)):clone(
+        proplists:get_value(repo_url, I),
+        perforator_ci_utils:repo_path(ID)), 
     % Check, maybe project is already running, so there is no need to start a
     % new instance:
     case perforator_ci_project:is_project_running(ID) of
