@@ -1,3 +1,11 @@
+var humane = require('humane-js');
+
+exports.notify = function(message) {
+    // TODO also, dream about desktop notifications?
+    // http://www.html5rocks.com/en/tutorials/notifications/quick/
+    humane.log(message);
+};
+
 exports.findById = function(arr, id) {
     return exports.findBy(arr, 'id', id);
 };
