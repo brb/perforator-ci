@@ -1,5 +1,6 @@
 var t = require('../templates');
 var w = require('../window');
+var common = require('../common');
 var v = require('valentine');
 var qwery = require('qwery');
 var bean = require('bean');
@@ -62,7 +63,10 @@ exports.init = function(page, cb) {
         });
     });
     page.handle(/^\/(.+)\/edit$/, function(from, to, params) {
-        page.req('project', page.projectId, function(_, project) {
+        page.req('project', page.projectId, function(err, project) {
+            if(err) {
+                throw common.error(err);
+            }
             page.body.html(t.projectEdit.render({
                 project : adaptToRender(project),
                 action : 'Save project'
