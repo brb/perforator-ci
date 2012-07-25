@@ -3,12 +3,15 @@
     <td>{{commit_id}}</td>
     <td>{{started}}</td>
     {{#finished}}
-    {{#succeeded}}
-    <td><i class="icon-ok"></i></td>
-    {{/succeeded}}
-    {{^succeeded}}
-    <td><i class="icon-remove"></i></td>
-    {{/succeeded}}
+    <td>
+        {{#succeeded}}
+        <i class="icon-ok"></i>
+        {{/succeeded}}
+        {{^succeeded}}
+        <i class="icon-remove"></i>
+        {{/succeeded}}
+        <a class="rebuild" href="#" data-commit="{{commit_id}}" data-project="{{id}}"><i class="icon-repeat"></i></a>
+    </td>
     <td>{{timeDelta}}</td>
     <td>{{time}}</td>
     {{/finished}}

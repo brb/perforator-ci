@@ -96,6 +96,15 @@ exports.init = function(page, cb) {
                 bean.add(row, 'click', function() {
                     page.go('/' + project.id + '/build/' + bonzo(row).data('id'));
                 });
+                var rebuild = bonzo(qwery('.rebuild', row));
+                bean.add(rebuild[0], 'click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    page.req('rebuild_now', {
+                        project : rebuild.data('project'),
+                        commit : rebuild.data('commit')
+                    });
+                });
             };
             v.each(qwery('tr'), attachClickHandler);
         });
