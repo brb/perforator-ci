@@ -67,7 +67,7 @@ Responsai wrapinami į:
 ### Response
 
     [{
-        name : string,
+        id : string,
         branch : string,
         repo_url : string,
         build_instructions : [ string ],
@@ -80,12 +80,12 @@ Responsai wrapinami į:
 
 ### Request
 
-    string (project name)
+    string (project id)
 
 ### Response
 
     [{
-        name : string,
+        id : string,
         branch : string,
         repo_url : string,
         build_instructions : [ string ],
@@ -100,7 +100,7 @@ Responsai wrapinami į:
 ### Request
 
     {
-        name : string,
+        id : string,
         branch : string,
         repo_url : string,
         build_instructions : [ string ],
@@ -118,7 +118,7 @@ Responsai wrapinami į:
 ### Request
 
     {
-        name : string,
+        id : string,
         branch : string,
         repo_url : string,
         build_instructions : [ string ],
@@ -135,7 +135,7 @@ Responsai wrapinami į:
 
 ### Request
 
-    string (project name)
+    string (project id)
 
 ### Response
 
@@ -154,7 +154,7 @@ Responsai wrapinami į:
 
 ### Request
 
-    string (project name)
+    string (project id)
 
 ### Response
 
