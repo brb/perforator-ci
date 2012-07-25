@@ -84,7 +84,7 @@ Responsai wrapinami į:
 
 ### Response
 
-    [{
+    {
         id : string,
         branch : string,
         repo_url : string,
@@ -92,7 +92,7 @@ Responsai wrapinami į:
         polling_strategy : "ondemand" | {
             time : integer
         }
-    }]
+    }
 
 
 ## /project/new
