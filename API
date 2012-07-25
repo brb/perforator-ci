@@ -207,3 +207,40 @@ Responsai wrapinami į:
                 }
             }]
         }]
+
+## /test_builds
+
+### Request
+
+    {
+        projectId : string,
+        moduleName : string,
+        testName : string
+    }
+
+### Response
+{
+    [{
+        build_id: integer,
+        duration : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        cpu_load : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        used_memory : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        cpu_util : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    }
+    }]
+
