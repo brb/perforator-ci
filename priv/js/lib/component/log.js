@@ -20,7 +20,7 @@ exports.init = function(page, cb) {
         step(function() {
             page.req('builds', page.projectId, this.parallel());
             page.req('project', page.projectId, this.parallel());
-        }, function(err, runs, project) {
+        }, function(err, builds, project) {
             if(err) {
                 page.body.html(t.error.render({
                     title : 'No projects found'
@@ -30,24 +30,25 @@ exports.init = function(page, cb) {
             var offs = [];
             offs.push(page.on('build_finished', function(_, buildFinished) {
                 if(buildFinished.project_id === project.id) {
-                    var run = common.findById(runs, buildFinished.build_id);
-                    run.finished = true;
-                    run.succeeded = buildFinished.success;
-                    run.time = (buildFinished.timestamp - (run.buildInit ? run.buildInit.timestamp : 0)) * 1000; // TODO this is fishy - when is run.buildInit undefined?
-                    run.origTime = run.time;
-                    run.time += ' ms';
-                    if(run.previous) {
-                        run.timeDelta = run.origTime - run.previous.origTime;
-                        run.timeDelta += ' ms';
+                    var build = common.findById(builds, buildFinished.build_id);
+                    build.finished = true;
+                    build.succeeded = buildFinished.success;
+                    // TODO this is fishy - when is build.buildInit undefined?
+                    build.time = (buildFinished.timestamp - (build.buildInit ? build.buildInit.timestamp : 0)) * 1000;
+                    build.origTime = build.time;
+                    build.time += ' ms';
+                    if(build.previous) {
+                        build.timeDelta = build.origTime - build.previous.origTime;
+                        build.timeDelta += ' ms';
                     }
-                    w.el('run-' + run.id).replaceWith(t.logRun.render(run, t));
-                    attachClickHandler(w.el('run-' + run.id)[0]);
+                    w.el('build-' + build.id).replaceWith(t.logBuild.render(build, t));
+                    attachClickHandler(w.el('build-' + build.id)[0]);
                 }
             }));
             offs.push(page.on('build_init', function(_, buildInit) {
                 if(buildInit.project_id === project.id) {
-                    var run = {
-                        previous : runs[0] || null,
+                    var build = {
+                        previous : builds[0] || null,
                         buildInit : buildInit,
                         id : buildInit.build_id,
                         commit_id : buildInit.commit_id,
@@ -56,9 +57,9 @@ exports.init = function(page, cb) {
                         modules : '',
                         tests : ''
                     };
-                    runsEl.prepend(t.logRun.render(run, t));
-                    attachClickHandler(w.el('run-' + run.id)[0]);
-                    runs.unshift(run);
+                    w.el('builds').prepend(t.logBuild.render(build, t));
+                    attachClickHandler(w.el('build-' + build.id)[0]);
+                    builds.unshift(build);
                 }
             }));
             page.beforego(function(from, to) {
@@ -66,29 +67,28 @@ exports.init = function(page, cb) {
                     off();
                 });
             });
-            var runLag = null;
+            var buildLag = null;
 
-            runs.reverse();
-            v.each(runs, function(run) {
-                run.origTime = run.time;
-                run.time += ' ms';
-                if(runLag === null) {
-                    run.timeDelta = null;
+            builds.reverse();
+            v.each(builds, function(build) {
+                build.origTime = build.time;
+                build.time += ' ms';
+                if(buildLag === null) {
+                    build.timeDelta = null;
                 } else {
-                    run.timeDelta = (run.origTime - runLag.origTime) + ' ms';
+                    build.timeDelta = (build.origTime - buildLag.origTime) + ' ms';
                 }
-                runLag = run;
+                buildLag = build;
             });
-            runs.reverse();
+            builds.reverse();
 
-            v.each(runs, function(run) {
-                run.started = moment(new Date(run.started * 1000)).format('LLLL');
+            v.each(builds, function(build) {
+                build.started = moment(new Date(build.started * 1000)).format('LLLL');
             });
             page.body.html(t.log.render({
-                runs : runs,
+                builds : builds,
                 project : project
             }, t));
-            var runsEl = bonzo(qwery('#runs'));
             var attachClickHandler = function(row) {
                 if(row.parentNode.nodeName.toLowerCase() === 'thead') {
                     return;
