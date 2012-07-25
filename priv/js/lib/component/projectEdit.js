@@ -1,5 +1,5 @@
-var t = require('./templates');
-var w = require('./window');
+var t = require('../templates');
+var w = require('../window');
 var v = require('valentine');
 var qwery = require('qwery');
 var bean = require('bean');

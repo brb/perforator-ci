@@ -6,14 +6,13 @@ var t = require('./templates');
 var w = require('./window');
 var page = require('./page');
 
-var storeBuilders = require('./store/builders');
-
-var log = require('./log');
-var run = require('./run');
-var test = require('./test');
-var projectEdit = require('./projectEdit');
-var compare = require('./compare');
-var sidebar = require('./sidebar');
+var storeBuilders = require('./component/storeBuilders');
+var log = require('./component/log');
+var run = require('./component/run');
+var test = require('./component/test');
+var projectEdit = require('./component/projectEdit');
+var compare = require('./component/compare');
+var sidebar = require('./component/sidebar');
 
 step(function() {
     var socket = w.createSocket();

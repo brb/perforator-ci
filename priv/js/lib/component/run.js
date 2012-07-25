@@ -1,13 +1,13 @@
-var t = require('./templates');
-var common = require('./common');
+var t = require('../templates');
+var common = require('../common');
 var moment = require('moment');
 var bean = require('bean');
 var step = require('step');
 var bonzo = require('bonzo');
 var qwery = require('qwery');
-var w = require('./window');
+var w = require('../window');
 var v = require('valentine');
-var series = require('./series');
+var series = require('../series');
 series = series.series;
 
 exports.init = function(page, cb) {

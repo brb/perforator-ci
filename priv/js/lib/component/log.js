@@ -1,12 +1,12 @@
-var t = require('./templates');
-var w = require('./window');
+var t = require('../templates');
+var w = require('../window');
 var v = require('valentine');
 var qwery = require('qwery');
 var step = require('step');
 var bean = require('bean');
 var bonzo = require('bonzo');
 var moment = require('moment');
-var common = require('./common');
+var common = require('../common');
 
 exports.init = function(page, cb) {
     page.handle('/', function() {

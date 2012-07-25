@@ -2,9 +2,9 @@ var v = require('valentine');
 var qwery = require('qwery');
 var bonzo = require('bonzo');
 var bean = require('bean');
-var t = require('./templates');
-var w = require('./window');
-var series = require('./series');
+var t = require('../templates');
+var w = require('../window');
+var series = require('../series');
 series = series.series;
 
 exports.init = function(page, cb) {
