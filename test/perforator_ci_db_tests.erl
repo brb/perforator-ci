@@ -8,7 +8,7 @@
 
 -compile(export_all).
 
-%% ============================================================================
+%% ===========================================================================
 
 db_test_() ->
     {foreach, 
@@ -28,38 +28,38 @@ db_test_() ->
 
 test_create_project() ->
     ?assertEqual(
-        1,
+        ok,
         perforator_ci_db:create_project({
             <<"1">>, "r", "b", git, on_demand, [], []})
     ),
     ?assertEqual(
-        1,
+        ok,
         perforator_ci_db:create_project({
             <<"1">>, "r", "b", git, on_demand, [], []})
     ),
     ?assertEqual(
-        2,
+        ok,
         perforator_ci_db:create_project({
             <<"2">>, "r", "b", git, on_demand, [], []})
     ),
     ?assertMatch(
-        #project{id=1, name= <<"1">>,
+        #project{id= <<"1">>,
             repo_url="r", branch="b", repo_backend=git,
             polling=on_demand, build_instructions=[], info=[]},
-        perforator_ci_db:get_project(1)
+        perforator_ci_db:get_project(<<"1">>)
     ),
     ?assertMatch(
-        [#project{id=1}, #project{id=2}],
+        [#project{id= <<"1">>}, #project{id= <<"2">>}],
         perforator_ci_db:get_projects()),
 
     ?assertEqual(
         ok,
         perforator_ci_db:update_project({
-            1, <<"1">>, "omg", "b", git, on_demand, [], []})
+            <<"1">>, "omg", "b", git, on_demand, [], []})
     ),
     ?assertMatch(
-        #project{id=1, repo_url="omg"},
-        perforator_ci_db:get_project(1)
+        #project{id= <<"1">>, repo_url="omg"},
+        perforator_ci_db:get_project(<<"1">>)
     ).
 
 test_create_build() ->

@@ -1,4 +1,5 @@
 %% @author Martynas <martynasp@gmail.com>
+%% @todo Fix names
 
 -module(perforator_ci_json_tests).
 
@@ -8,15 +9,12 @@
 
 -compile(export_all).
 
--define(FROM(Type, Data), perforator_ci_json:from(Type, Data)).
--define(DEC(JSON), jiffy:decode(JSON)).
-
 %% ============================================================================
 
 from_project_new_test() ->
     JSON = <<"
         {
-            \"name\": \"name\",
+            \"id\": \"id\",
             \"branch\" : \"branch\",
             \"repo_url\" : \"url\",
             \"build_instructions\" : [ \"one\", \"two\" ],
@@ -25,15 +23,14 @@ from_project_new_test() ->
     ">>,
 
     ?assertEqual(
-        {<<"name">>, "url", "branch", perforator_ci_git, {time, 10},
+        {<<"id">>, "url", "branch", perforator_ci_git, {time, 10},
             ["one", "two"], []},
-        ?FROM(project_new, ?DEC(JSON))).
+        from(project_new, dec(JSON))).
 
 from_project_update_test() ->
     JSON = <<"
         {
             \"id\": \"id\",
-            \"name\": \"name\",
             \"branch\" : \"branch\",
             \"repo_url\" : \"url\",
             \"build_instructions\" : [ \"one\", \"two\" ],
@@ -42,9 +39,9 @@ from_project_update_test() ->
     ">>,
 
     ?assertEqual(
-        {<<"id">>, <<"name">>, "url", "branch", perforator_ci_git, on_demand,
+        {<<"id">>, "url", "branch", perforator_ci_git, on_demand,
             ["one", "two"], []},
-        ?FROM(project_update, ?DEC(JSON))).
+        from(project_update, dec(JSON))).
 
 to_build_test() ->
     Data = [{suites, [{<<"test_suite_1">>, [{test_cases,
@@ -68,3 +65,12 @@ to_test_runs_test() ->
     JSON = perforator_ci_json:to(test_runs, Data),
     _Enc = jiffy:encode(JSON). %% it happens -- good enough.
 
+%% ============================================================================
+%% Helpers
+%% ============================================================================
+
+from(Type, Data) ->
+    perforator_ci_json:from(Type, Data).
+
+dec(JSON) ->
+    jiffy:decode(JSON).

@@ -63,7 +63,7 @@ sh_receive_loop(Port, Acc) ->
 repo_path(ProjectID) ->
     filename:join(
         perforator_ci_utils:get_env(perforator_ci, repos_path, ?REPOS_DIR),
-        integer_to_list(ProjectID)
+        binary_to_list(ProjectID)
     ).
 
 %% @doc No comments.

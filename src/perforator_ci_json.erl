@@ -27,7 +27,7 @@ from(project_new, {Data}) ->
         proplists:get_value(<<"build_instructions">>, Data)],
 
     {
-        proplists:get_value(<<"name">>, Data),
+        proplists:get_value(<<"id">>, Data),
         binary_to_list(proplists:get_value(<<"repo_url">>, Data)),
         binary_to_list(proplists:get_value(<<"branch">>, Data)),
         perforator_ci_git, % @todo clean dirty hack
@@ -37,10 +37,7 @@ from(project_new, {Data}) ->
     };
 
 from(project_update, {Data}) ->
-    list_to_tuple(
-        [proplists:get_value(<<"id">>, Data) |
-            tuple_to_list(from(project_new, {Data}))]
-    );
+    from(project_new, {Data});
 
 from(project, ProjectID) ->
     ProjectID;
@@ -73,7 +70,7 @@ to(project_new, ProjectID) ->
 to(project_update, _) ->
     null;
 
-to(project, #project{id=ID, name=Name, repo_url=RepoURL, branch=Branch,
+to(project, #project{id=ID, repo_url=RepoURL, branch=Branch,
         polling=Polling, build_instructions=BuildInstr}) ->
     Polling1 = case Polling of
         on_demand -> ?BIN(ondemand);
@@ -83,7 +80,6 @@ to(project, #project{id=ID, name=Name, repo_url=RepoURL, branch=Branch,
 
     {[
         {id, ID},
-        {name, ?BIN(Name)},
         {repo_url, ?BIN(RepoURL)},
         {branch, ?BIN(Branch)},
         {polling_strategy, Polling1},

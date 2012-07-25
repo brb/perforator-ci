@@ -44,11 +44,11 @@
         perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
         perforator_ci_types:polling_strategy(),
         perforator_ci_types:build_instructions(), list()}) ->
-            perforator_ci_types:project_id().
-create_and_start_project({Name, RepoUrl, Branch, RepoBackend, Polling,
+            ok.
+create_and_start_project({ID, RepoUrl, Branch, RepoBackend, Polling,
         BuildInstr, Info}) ->
     % Store and fetch an ID:
-    ID = perforator_ci_db:create_project({Name, RepoUrl, Branch, RepoBackend,
+    ok = perforator_ci_db:create_project({ID, RepoUrl, Branch, RepoBackend,
         Polling, BuildInstr, Info}),
     % Clone project repo:
     RepoBackend:clone(RepoUrl, perforator_ci_utils:repo_path(ID)), 
@@ -59,7 +59,7 @@ create_and_start_project({Name, RepoUrl, Branch, RepoBackend, Polling,
         false -> {ok, _} = perforator_ci_project_sup:start_project(ID)
     end,
 
-    ID.
+    ok.
 
 %% @doc Updates project info. Updates take place after project handler process
 %% is restarted (dirty hack).
@@ -69,10 +69,10 @@ create_and_start_project({Name, RepoUrl, Branch, RepoBackend, Polling,
         perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
         perforator_ci_types:polling_strategy(),
         perforator_ci_types:build_instructions(), list()}) -> ok.
-update_project({ID, Name, RepoUrl, Branch, RepoBackend, Polling,
+update_project({ID, RepoUrl, Branch, RepoBackend, Polling,
         BuildInstr, Info}) ->
     % Update DB:
-    ok = perforator_ci_db:update_project({ID, Name, RepoUrl, Branch,
+    ok = perforator_ci_db:update_project({ID, RepoUrl, Branch,
         RepoBackend, Polling, BuildInstr, Info}),
     % Restart project handler:
     exit(perforator_ci_project:get_pid(ID), '$restart'),

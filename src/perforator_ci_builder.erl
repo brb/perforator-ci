@@ -277,5 +277,5 @@ repo_path(ProjectID) ->
     filename:join(
         perforator_ci_utils:get_env(perforator_ci,
             builder_repos_path, ?BUILDER_REPOS_DIR),
-        integer_to_list(ProjectID)
+        binary_to_list(ProjectID)
     ).

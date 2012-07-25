@@ -1,6 +1,6 @@
 %% @doc Wrapper for mnesia.
 
-%% @author Martynas <martynas@gmail.com>
+%% @author Martynas <martynasp@gmail.com>
 
 -module(perforator_ci_db).
 
@@ -33,56 +33,42 @@
 %% API
 %% ============================================================================
 
-%% @doc Initializes a new project. Should be called before starting project
-%% worker.
-%%
-%% Returns generated project id. If project with given project name exists,
-%% will return already generated id.
+%% @doc Initialize a new project.
+%% Should be called before starting the project worker (process).
 -spec create_project({
-        perforator_ci_types:project_name(), perforator_ci_types:repo_url(),
+        perforator_ci_types:id(), perforator_ci_types:repo_url(),
         perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
         perforator_ci_types:polling_strategy(),
-        perforator_ci_types:build_instructions(), list()}) ->
-            perforator_ci_types:project_id().
-create_project({Name, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
+        perforator_ci_types:build_instructions(), list()}) -> ok.
+create_project({ID, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
         Info}) ->
     transaction(
         fun () ->
-            case mnesia:index_read(project, Name, #project.name) of
-                [#project{id=ID}] -> ID;
+            case mnesia:read(project, ID) of
+                [#project{}] -> ok;
                 [] ->
-                    % Get next id
-                    ID =
-                        case mnesia:last(project) of
-                            '$end_of_table' -> 1;
-                            N when is_integer(N) -> N+1
-                        end,
                     % Write teh project data
                     ok = mnesia:write(
                         #project{
                             id = ID,
-                            name = Name,
                             repo_url = RepoUrl,
                             branch = Branch,
                             repo_backend = RepoBackend,
                             polling = Polling,
                             build_instructions = BuildInstr,
                             info = Info
-                        }),
-
-                    ID
+                        })
             end
         end).
 
 %% @doc Updates project (only record in DB).
 %% @throws {project_not_found, I}.
 -spec update_project({
-        perforator_ci_types:project_id(),
-        perforator_ci_types:project_name(), perforator_ci_types:repo_url(),
+        perforator_ci_types:project_id(), perforator_ci_types:repo_url(),
         perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
         perforator_ci_types:polling_strategy(),
         perforator_ci_types:build_instructions(), list()}) -> ok.
-update_project({ID, Name, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
+update_project({ID, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
         Info}) ->
     transaction(
         fun () ->
@@ -94,7 +80,6 @@ update_project({ID, Name, RepoUrl, Branch, RepoBackend, Polling, BuildInstr,
                     ok = mnesia:write(
                         #project{
                             id = ID,
-                            name = Name,
                             repo_url = RepoUrl,
                             branch = Branch,
                             repo_backend = RepoBackend,
@@ -294,7 +279,6 @@ create_tables() ->
     {atomic, ok} = mnesia:create_table(project, [
         {type, ordered_set},
         {attributes, record_info(fields, project)},
-        {index, [#project.name]},
         {disc_copies, [node()]}
     ]),
 

@@ -40,9 +40,9 @@ project_test_() ->
 %% ============================================================================
 
 test_start_project() ->
-    1 = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
+    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
         perforator_ci_git, on_demand, [], []}),
-    1 = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
+    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
         perforator_ci_git, on_demand, [], []}),
 
     ?assertMatch(
@@ -61,7 +61,7 @@ test_start_project() ->
         [_], % the same child is up
         supervisor:which_children(perforator_ci_project_sup)
     ),
-    ?assert(perforator_ci_project:is_project_running(1)).
+    ?assert(perforator_ci_project:is_project_running(<<"1">>)).
 
 test_ping_and_build() ->
     ok = meck:new(perforator_ci_git, [no_link, passthrough]),
@@ -73,7 +73,7 @@ test_ping_and_build() ->
     ok = meck:new(perforator_ci_builder, [no_link, passthrough]),
     ok = meck:expect(perforator_ci_builder, build, 2, ok),
 
-    1 = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
+    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
         perforator_ci_git, {time, 50}, [], []}),
     timer:sleep(100),
 
@@ -82,13 +82,13 @@ test_ping_and_build() ->
 
     ?assertMatch(
         [#project_build{id=1, commit_id= <<"random_commit_id">>}],
-        perforator_ci_db:get_unfinished_builds(1)
+        perforator_ci_db:get_unfinished_builds(<<"1">>)
     ),
 
-    ok = gen_server:call(perforator_ci_project:get_pid(1),
+    ok = gen_server:call(perforator_ci_project:get_pid(<<"1">>),
         {build_finished, 1, [omg], true}),
     timer:sleep(50),
 
-    ?assertMatch([], perforator_ci_db:get_unfinished_builds(1)),
+    ?assertMatch([], perforator_ci_db:get_unfinished_builds(<<"1">>)),
 
     ok = meck:unload([perforator_ci_builder, perforator_ci_git]).

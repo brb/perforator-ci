@@ -4,7 +4,6 @@
 
 -export_type([
     project_id/0,
-    project_name/0,
     polling_strategy/0,
     build_instructions/0,
 
@@ -22,8 +21,7 @@
 
 %% ============================================================================
 
--type project_id() :: integer().
--type project_name() :: integer().
+-type project_id() :: binary().
 -type polling_strategy() :: {time, integer()} | on_demand. % Time is in ms!
 -type build_instructions() :: list().
 
