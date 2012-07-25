@@ -1,0 +1,298 @@
+# WebSocket API
+
+visi wrapinami į:
+
+    {
+        err : null | string,
+        msg : {},
+        type : string
+    }
+
+## build_init
+    
+    {
+        project_id : number,
+        build_id : number,
+        commit_id : string,
+        timestamp: integer (unix time in seconds)
+        TODO modules count, tests count
+    }
+    
+## build_finished
+    
+    {
+        project_id : number,
+        build_id : number,
+        success : boolean,
+        timestamp: integer (unix time in seconds)
+    }
+    
+## queue_size
+
+    {
+        name: string,
+        queue_size: integer
+    }
+
+# REST API (prefixed with /api/1)
+
+Responsai wrapinami į:
+
+    {
+        err : null | string,
+        msg : {} | Error,
+    }
+
+## /builders
+
+### Request
+
+    null
+
+### Response
+
+    [{
+        name : string,
+        queue_size: integer
+    }]
+
+
+## /projects
+
+### Request
+
+    null
+
+### Response
+
+    [{
+        id : integer,
+        name : string,
+        branch : string,
+        repo_url : string,
+        build_instructions : [ string ],
+        polling_strategy : "ondemand" | {
+            time : integer
+        }
+    }]
+
+## /project
+
+### Request
+
+    number (project id)
+
+### Response
+
+    [{
+        id : integer,
+        name : string,
+        branch : string,
+        repo_url : string,
+        build_instructions : [ string ],
+        polling_strategy : "ondemand" | {
+            time : integer
+        }
+    }]
+
+
+## /project/new
+
+### Request
+
+    {
+        name : string,
+        branch : string,
+        repo_url : string,
+        build_instructions : [ string ],
+        polling_strategy : "ondemand" | {
+            time : integer
+        }
+    }
+
+### Response
+
+    integer (id)
+
+## /project/update
+
+### Request
+
+    {
+        id : integer,
+        name : string,
+        branch : string,
+        repo_url : string,
+        build_instructions : [ string ],
+        polling_strategy : "ondemand" | {
+            time : integer
+        }
+    }
+
+### Response
+
+    null
+
+## /tests TODO
+
+### Request
+    {
+        projectId : string,
+        runId : string,
+        moduleName : string
+    }
+
+### Response
+
+    [{
+        name : string
+    }]
+
+## /modules TODO
+
+### Request
+
+    {
+        projectId : string,
+        runId : string
+    }
+
+### Response
+
+    [{
+        name : string
+    }]
+
+## /testRun TODO
+
+### Request
+
+    {
+        projectId : string,
+        moduleName : string,}o
+        testName : string,
+        runId : string
+    }
+
+### Response
+
+    {
+        name : string,
+        duration : number,
+        cpu_load : number,
+        used_memory : number,
+        cpu_util : number
+    }
+
+oo## /test_runs TODO
+
+### Request
+
+    {
+        projectId : string,
+        moduleName : string,
+        testName : string
+    }
+
+### Response
+{
+    [{
+        build_id: integer,
+        duration : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        cpu_load : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        used_memory : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+        cpu_util : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    }
+    }]
+
+## /builds
+
+### Request
+
+    string (project id)
+
+### Response
+
+    [{
+        id : string,
+        succeeded : boolean,
+        finished : boolean,
+        started : number (unix time in seconds),
+        time : number (duration in milliseconds),
+        modules : number,
+        commit_id : string,
+        tests : number
+    }]
+
+## /build_now
+
+### Request
+
+    number (project id)
+
+### Response
+
+    null
+
+## /previous_build
+
+### Request
+
+    number (build id)
+
+### Response
+
+    null | number (id of previous build in the same project)
+
+## /build
+
+### Request
+
+    number (build id)
+
+### Response
+
+        [{
+            name : string,
+            test_cases : [{
+                name : string,
+                successful: boolean,
+                result : null | {
+                    duration : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    },
+                    used_memory : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    }
+                    cpu_util : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    }
+                    cpu_load : {
+                        min : number,
+                        max : number,
+                        mean : number
+                    }
+                }
+            }]
+        }]
