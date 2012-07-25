@@ -4,6 +4,7 @@ var bean = require('bean');
 var qwery = require('qwery');
 var bonzo = require('bonzo');
 var v = require('valentine');
+var common = require('../common');
 
 exports.init = function(page, cb) {
     var insertProject = function(projects, project) {
@@ -47,6 +48,7 @@ exports.init = function(page, cb) {
                 workers : page.store.builders
             }, t));
             bean.add(w.el('build-now')[0], 'click', function(e) {
+                common.notify('A new build has been started');
                 page.req('build_now', page.projectId);
                 e.preventDefault();
             });
