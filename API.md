@@ -150,6 +150,19 @@ Responsai wrapinami į:
         tests : number
     }]
 
+## /rebuild_now
+
+### Request
+
+    {
+        project : string (project id),
+        commit : string (commit id)
+    }
+
+### Response
+
+    null
+
 ## /build_now
 
 ### Request
