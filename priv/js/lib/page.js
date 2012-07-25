@@ -1,6 +1,7 @@
 var bean = require('bean');
 var reqwest = require('reqwest');
 var w = require('./window');
+var common = require('./common');
 var p = require('page');
 
 exports.create = function(socket) {
@@ -44,14 +45,18 @@ exports.create = function(socket) {
         req : function(resource, msg, cb) {
             console.log('page.req', resource, msg);
             cb = cb || function(){};
+            var data = JSON.stringify(msg);
             reqwest({
                 url : '/api/1/' + resource,
                 method : 'post',
                 type : 'json',
-                data : JSON.stringify(msg),
+                data : data,
                 contentType: 'application/json',
-                error : function() {
-                    console.log('req error', resource, msg, arguments);
+                error : function(xhr) {
+                    throw new common.error({
+                        error : xhr.status + ' ' + xhr.statusText,
+                        message : 'tried to send ' + resource + ' this: ' + data
+                    });
                 },
                 success : function(resp) {
                     console.log('resp', resp);
