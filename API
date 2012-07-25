@@ -11,7 +11,7 @@ visi wrapinami į:
 ## build_init
     
     {
-        project_id : number,
+        project : string,
         build_id : number,
         commit_id : string,
         timestamp: integer (unix time in seconds)
@@ -21,7 +21,7 @@ visi wrapinami į:
 ## build_finished
     
     {
-        project_id : number,
+        project : string,
         build_id : number,
         success : boolean,
         timestamp: integer (unix time in seconds)
@@ -66,7 +66,6 @@ Responsai wrapinami į:
 ### Response
 
     [{
-        id : integer,
         name : string,
         branch : string,
         repo_url : string,
@@ -80,12 +79,11 @@ Responsai wrapinami į:
 
 ### Request
 
-    number (project id)
+    string (project name)
 
 ### Response
 
     [{
-        id : integer,
         name : string,
         branch : string,
         repo_url : string,
@@ -112,14 +110,13 @@ Responsai wrapinami į:
 
 ### Response
 
-    integer (id)
+    null
 
 ## /project/update
 
 ### Request
 
     {
-        id : integer,
         name : string,
         branch : string,
         repo_url : string,
@@ -224,7 +221,7 @@ oo## /test_runs TODO
 
 ### Request
 
-    string (project id)
+    string (project name)
 
 ### Response
 
@@ -243,7 +240,7 @@ oo## /test_runs TODO
 
 ### Request
 
-    number (project id)
+    string (project name)
 
 ### Response
 
