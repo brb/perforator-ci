@@ -5,7 +5,7 @@ Perforator CI is a continious integration server used for performance
 regression testing.
 
 It is used together with the Perforator performance unit testing tool,
-which is can be found here: https://github.com/Spawnfest2012/perforator
+which is can be found here: https://github.com/yfyf/perforator
 
 Dependencies
 ----
@@ -20,8 +20,8 @@ Quick tutorial
 Start the Perforator CI server:
 
 ```
-   git clone https://github.com/Spawnfest2012/perforator2 perforator_ci
-   cd perforator_ci/
+   git clone https://github.com/brb/perforator-ci
+   cd perforator-ci/
    make start-clean
 ```
 
@@ -29,10 +29,12 @@ Perforator CI should be running on http://localhost:8080/
 
 We need add a project which does some performance unit testing.
 
-The Perforator tools has some sample performance testing modules, so let's try
-it, use git@github.com:Spawnfest2012/perforator.git as your repo and keep 
-the default build steps. Warning: repo should be accessible, otherwise CI will
-crash.
+[The Eight Myths of Erlang
+Performance](http://www.erlang.org/doc/efficiency_guide/myths.html) are pretty
+interesting to investigate and we have prepared a special repo for that at
+https://github.com/yfyf/8-myths-of-erlang.git
+Add it as a project and keep the default build steps. (Warning: repo should be
+accessible, otherwise CI will crash.)
 
 Do a few builds and click around, you should experience some fabulous
 statistics.
