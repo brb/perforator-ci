@@ -4,6 +4,7 @@
     "description": "Continuous Performance Testing",
     "version": "0.0.1",
     "dependencies": {
+        "humane-js" : "3.0.x",
         "deep-equal" : "0.0.x",
         "moment" : "1.6.x",
         "reqwest" : "0.4.x",
