@@ -15,7 +15,8 @@ visi wrapinami į:
         build_id : number,
         commit_id : string,
         timestamp: integer (unix time in seconds)
-        TODO modules count, tests count
+        modules : number,
+        tests : number
     }
     
 ## build_finished
