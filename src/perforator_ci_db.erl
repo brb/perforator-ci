@@ -14,7 +14,7 @@
     get_project/1,
     get_projects/0,
     get_builds/1,
-    get_test_runs/3,
+    get_test_builds/3,
 
     create_build/1,
     get_last_build/1,
@@ -91,12 +91,12 @@ get_unfinished_builds(ProjectID) ->
 
 %% @doc Returns all test runs of a single test case.
 %% @todo do proper specs
--spec get_test_runs(perforator_ci_types:project_id(), TestSuite::binary(),
+-spec get_test_builds(perforator_ci_types:project_id(), TestSuite::binary(),
     TestName::binary()) ->
         [TestData :: term()].
 %% @todo refactor this to return all test data, not only test data relevant for
 %% HTTP request.
-get_test_runs(ProjectId, SuiteName, TestName) ->
+get_test_builds(ProjectId, SuiteName, TestName) ->
     Builds = [B || #project_build{finished=F}=B <- get_builds(ProjectId),
         F =:= true],
     MappedBuilds = [{Build#project_build.id, Build#project_build.info} ||

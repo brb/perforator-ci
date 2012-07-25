@@ -134,12 +134,12 @@ handle_request([<<"previous_build">>], Data, _Req) ->
                 perforator_ci_json:from(previous_build, Data))
         end);
 
-handle_request([<<"test_runs">>], Data, _Req) ->
-    wrap_call(test_runs,
+handle_request([<<"test_builds">>], Data, _Req) ->
+    wrap_call(test_builds,
         fun () ->
             {ProjectID, SuiteName, TestName} =
-                perforator_ci_json:from(test_runs, Data),
-            perforator_ci_db:get_test_runs(ProjectID, SuiteName, TestName)
+                perforator_ci_json:from(test_builds, Data),
+            perforator_ci_db:get_test_builds(ProjectID, SuiteName, TestName)
         end);
 
 %% 404

@@ -53,7 +53,7 @@ from(build, ProjectID) ->
 from(previous_build, BuildID) ->
     BuildID;
 
-from(test_runs, {Data}) ->
+from(test_builds, {Data}) ->
     ProjectId = proplists:get_value(<<"projectId">>, Data),
     ModuleName = proplists:get_value(<<"moduleName">>, Data),
     TestName = proplists:get_value(<<"testName">>, Data),
@@ -161,7 +161,7 @@ to(build, #project_build{info=TestInfo}) ->
         ]}
     end, Suites);
 
-to(test_runs, Data) ->
+to(test_builds, Data) ->
     lists:map(fun ({BuildId, TestData}) ->
         force_objects([{build_id, BuildId}|TestData])
     end, Data);
