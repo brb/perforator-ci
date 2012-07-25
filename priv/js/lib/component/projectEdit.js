@@ -10,7 +10,7 @@ exports.init = function(page, cb) {
     var gather = function() {
         var ondemand = w.el('ondemand').attr('checked');
         return {
-            name : bonzo(qwery('#name')).val(),
+            id : bonzo(qwery('#id')).val(),
             repo_url : bonzo(qwery('#repo_url')).val(),
             branch : bonzo(qwery('#branch')).val(),
             build_instructions : v.map(qwery('.app-build_instruction'), function(bi) {
@@ -50,7 +50,7 @@ exports.init = function(page, cb) {
     var adapt = function(project) {
         var ondemand = project.polling_strategy === 'ondemand';
         return {
-            name : project.name,
+            id : project.id,
             repo_url : project.repo_url,
             branch : project.branch,
             build_instructions : v.map(project.build_instructions, function(instruction) {
@@ -65,8 +65,8 @@ exports.init = function(page, cb) {
     page.handle(/^\/add$/, function() {
         page.body.html(t.projectEdit.render({
             project : adapt({
-                name : 'Perforator',
-                repo_url : 'file:///home/tahu/Desktop/PERFORATOR/perforator',
+                id : 'Perforator',
+                repo_url : 'file:///home/tahu/Desktop/PERFORATOR',
                 branch : 'origin/master',
                 build_instructions : [ './rebar get-deps', './rebar compile', './rebar perf' ],
                 polling_strategy : 'ondemand'

@@ -9,7 +9,7 @@ var common = require('../common');
 exports.init = function(page, cb) {
     var insertProject = function(projects, project) {
         for(var i = 0; i < projects.length; i += 1) {
-            if(projects[i].name > project.name) {
+            if(projects[i].id > project.id) {
                 projects.splice(i, 0, project);
                 return {
                     after : false,

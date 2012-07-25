@@ -89,7 +89,7 @@ exports.create = function(socket) {
     };
     bean.add(page, 'page', function(from, to, params) {
         if(params.length > 0) {
-            var projectId = parseInt(params[0], 10);
+            var projectId = params[0];
             if(projectId !== page.projectId) {
                 page.projectId = projectId;
                 bean.fire(page, 'projectId');

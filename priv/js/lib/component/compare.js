@@ -19,7 +19,7 @@ exports.init = function(page, cb) {
         var runs = [];
         v.each(state.runIds, function(_, i) {
             runs.push({
-                projectId : parseInt(state.projectId, 10),
+                projectId : state.projectId,
                 runId : parseInt(state.runIds[i], 10),
                 moduleName : state.moduleNames[i],
                 testName : state.testNames[i]
