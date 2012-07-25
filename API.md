@@ -2,11 +2,11 @@
 
 All application messages below are wrapped in the following:
 
-    {
-        err : null | string,
-        msg : {} | Error,
-        type : string
-    }
+    {
+        err : null | string,
+        msg : {} | Error,
+        type : string
+    }
 
 ## build_init
     
