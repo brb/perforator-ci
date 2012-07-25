@@ -18,7 +18,6 @@
 %% ============================================================================
 
 from(project_new, {Data}) ->
-    ?error("WTF0", [Data]),
     Polling =
         case proplists:get_value(<<"polling_strategy">>, Data) of
             <<"ondemand">> -> on_demand;
@@ -65,7 +64,7 @@ from(test_runs, {Data}) ->
 %% ============================================================================
 
 to(project_new, ProjectID) ->
-    ProjectID;
+    null;
 
 to(project_update, _) ->
     null;

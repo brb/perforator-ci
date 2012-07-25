@@ -42,7 +42,6 @@
 -spec start_project(#project{}) -> ok.
 start_project(#project{id=ID, repo_url=RUrl, repo_backend=Mod}=P) ->
     % Store project in DB:
-    ?error("WTF", [P]),
     ok = perforator_ci_db:write_project(P),
     % Clone project repo:
     Mod:clone(RUrl, perforator_ci_utils:repo_path(ID)), 
