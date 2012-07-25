@@ -3,8 +3,7 @@
 %% ============================================================================
 
 -record(project, {
-    id=0 :: perforator_ci_types:project_id(), % unique
-    name :: perorator_ci_types:project_name(), % unique
+    id :: perforator_ci_types:project_id(), % unique
 
     repo_url :: perforator_ci_types:repo_url(),
     branch :: perforator_ci_types:branch(),
@@ -87,3 +86,16 @@
 
 -define(FMT(Msg, Args), lists:flatten(io_lib:format(Msg, Args))).
 -define(BIN(X), perforator_ci_utils:to_bin(X)).
+-define(ETRACE(X),
+    {element(1, X),
+        fun () ->
+            try
+                (element(2, X))()
+            catch
+                C:R ->
+                    ?error("screw you, eunit.", [{c, C}, {r, R},
+                        {trace, erlang:get_stacktrace()}])
+            end
+        end
+    }).
+
