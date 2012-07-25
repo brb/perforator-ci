@@ -44,10 +44,7 @@
             <div class="control-group">
                 <label class="control-label">Build instructions</label>
                 <div class="controls">
-                    {{#project.build_instructions}}
-                    {{> build_instruction}}
-                    {{/project.build_instructions}}
-                    <button class="app-add" type="button"><i class="icon-plus"></i></button>
+                    <textarea id="build_instructions">{{project.build_instructions}}</textarea>
                 </div>
             </div>
             <div class="form-actions">

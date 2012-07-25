@@ -10,29 +10,16 @@ exports.init = function(page, cb) {
     var gather = function() {
         var ondemand = w.el('ondemand').attr('checked');
         return {
-            id : bonzo(qwery('#id')).val(),
-            repo_url : bonzo(qwery('#repo_url')).val(),
-            branch : bonzo(qwery('#branch')).val(),
-            build_instructions : v.map(qwery('.app-build_instruction'), function(bi) {
-                return bonzo(bi).val();
-            }),
+            id : w.el('id').val(),
+            repo_url : w.el('repo_url').val(),
+            branch : w.el('branch').val(),
+            build_instructions : v.reject(v.map(w.el('build_instructions').val().split('\n'), v.trim), v.is.emp),
             polling_strategy : (ondemand ? 'ondemand' : {
                 time : parseInt(bonzo(qwery('#time')).val(), 10)
             })
         };
     };
     var augment = function() {
-        var add = qwery('.app-add')[0];
-        bean.add(add, 'click', function() {
-            var removes = qwery('.app-remove');
-            var r = bonzo(add).before(t.build_instruction.render({
-                instruction : ''
-            }));
-            augment.bindRemove(qwery('.app-remove', r.previous())[0]);
-        });
-        v.each(qwery('.app-remove'), function(remove) {
-            augment.bindRemove(remove);
-        });
         bean.add(w.el('ondemand')[0], 'click', function() {
             console.log('click', gather());
             if(gather().polling_strategy === 'ondemand') {
@@ -42,29 +29,19 @@ exports.init = function(page, cb) {
             }
         });
     };
-    augment.bindRemove = function(remove) {
-        bean.add(remove, 'click', function() {
-            bonzo(remove.parentNode).remove();
-        });
-    };
-    var adapt = function(project) {
-        var ondemand = project.polling_strategy === 'ondemand';
+    var adaptToRender = function(project) {
         return {
             id : project.id,
             repo_url : project.repo_url,
             branch : project.branch,
-            build_instructions : v.map(project.build_instructions, function(instruction) {
-                return {
-                    instruction : instruction
-                };
-            }),
-            ondemand : ondemand,
+            build_instructions : project.build_instructions.join('\n'),
+            ondemand : project.polling_strategy === 'ondemand',
             polling_strategy : project.polling_strategy
         };
     };
     page.handle(/^\/add$/, function() {
         page.body.html(t.projectEdit.render({
-            project : adapt({
+            project : adaptToRender({
                 id : 'Perforator',
                 repo_url : 'file:///home/tahu/Desktop/PERFORATOR',
                 branch : 'origin/master',
@@ -87,7 +64,7 @@ exports.init = function(page, cb) {
     page.handle(/^\/(.+)\/edit$/, function(from, to, params) {
         page.req('project', page.projectId, function(_, project) {
             page.body.html(t.projectEdit.render({
-                project : adapt(project),
+                project : adaptToRender(project),
                 action : 'Save project'
             }, t));
             augment();
