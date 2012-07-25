@@ -1,6 +1,6 @@
 # WebSocket API
 
-visi wrapinami į:
+All application messages below are wrapped in the following:
 
     {
         err : null | string,
@@ -37,7 +37,7 @@ visi wrapinami į:
 
 # REST API (prefixed with /api/1)
 
-Responsai wrapinami į:
+All responses below are wrapped in the following:
 
     {
         err : null | string,
