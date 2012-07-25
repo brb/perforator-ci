@@ -9,7 +9,7 @@ All application messages below are wrapped in the following:
     }
 
 ## build_init
-    
+
     {
         project : string,
         build_id : number,
@@ -18,16 +18,16 @@ All application messages below are wrapped in the following:
         modules : number,
         tests : number
     }
-    
+
 ## build_finished
-    
+
     {
         project : string,
         build_id : number,
         success : boolean,
         timestamp: integer (unix time in seconds)
     }
-    
+
 ## queue_size
 
     {
@@ -56,7 +56,6 @@ All responses below are wrapped in the following:
         name : string,
         queue_size: integer
     }]
-
 
 ## /projects
 
