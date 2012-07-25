@@ -79,7 +79,7 @@ handle_request([<<"project">>], Data, _Req) ->
 handle_request([<<"project">>, <<"new">>], Data, _Req) ->
     wrap_call(project_new,
         fun () ->
-            perforator_ci:create_and_start_project(
+            perforator_ci:start_project(
                 perforator_ci_json:from(project_new, Data))
         end);
 

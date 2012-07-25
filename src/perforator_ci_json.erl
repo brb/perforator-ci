@@ -18,6 +18,7 @@
 %% ============================================================================
 
 from(project_new, {Data}) ->
+    ?error("WTF0", [Data]),
     Polling =
         case proplists:get_value(<<"polling_strategy">>, Data) of
             <<"ondemand">> -> on_demand;
@@ -26,14 +27,13 @@ from(project_new, {Data}) ->
     BuildInstr = [binary_to_list(I) || I <-
         proplists:get_value(<<"build_instructions">>, Data)],
 
-    {
-        proplists:get_value(<<"id">>, Data),
-        binary_to_list(proplists:get_value(<<"repo_url">>, Data)),
-        binary_to_list(proplists:get_value(<<"branch">>, Data)),
-        perforator_ci_git, % @todo clean dirty hack
-        Polling,
-        BuildInstr,
-        []
+    #project{
+        id = proplists:get_value(<<"id">>, Data),
+        repo_url = binary_to_list(proplists:get_value(<<"repo_url">>, Data)),
+        branch = binary_to_list(proplists:get_value(<<"branch">>, Data)),
+        repo_backend = perforator_ci_git, % @todo clean dirty hack
+        polling = Polling,
+        build_instructions = BuildInstr
     };
 
 from(project_update, {Data}) ->

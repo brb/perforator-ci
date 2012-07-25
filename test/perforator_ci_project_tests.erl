@@ -32,7 +32,7 @@ project_test_() ->
             perforator_ci:stop()
         end,
         [
-            {"Start project/recovery", fun test_start_project/0},
+            ?ETRACE({"Start project/recovery", fun test_start_project/0}),
             {"Ping -> build", fun test_ping_and_build/0}
         ]
     }.
@@ -40,10 +40,22 @@ project_test_() ->
 %% ============================================================================
 
 test_start_project() ->
-    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
-        perforator_ci_git, on_demand, [], []}),
-    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
-        perforator_ci_git, on_demand, [], []}),
+    ok = perforator_ci:start_project(
+        #project{
+            id = <<"1">>,
+            repo_url = ?REPO,
+            branch = "origin/master",
+            repo_backend = perforator_ci_git,
+            polling = {time, 5000}
+        }),
+    ok = perforator_ci:start_project(
+        #project{
+            id = <<"1">>,
+            repo_url = ?REPO,
+            branch = "origin/master",
+            repo_backend = perforator_ci_git,
+            polling = {time, 5000}
+        }),
 
     ?assertMatch(
         [_], % exactly one child is started
@@ -73,8 +85,14 @@ test_ping_and_build() ->
     ok = meck:new(perforator_ci_builder, [no_link, passthrough]),
     ok = meck:expect(perforator_ci_builder, build, 2, ok),
 
-    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "b",
-        perforator_ci_git, {time, 50}, [], []}),
+    ok = perforator_ci:start_project(
+        #project{
+            id = <<"1">>,
+            repo_url = ?REPO,
+            branch = "origin/master",
+            repo_backend = perforator_ci_git,
+            polling = {time, 50}
+        }),
     timer:sleep(100),
 
     ?assert(meck:validate(perforator_ci_git)),

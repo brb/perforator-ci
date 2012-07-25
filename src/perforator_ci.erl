@@ -27,7 +27,7 @@
 
 %% API
 -export([
-    create_and_start_project/1,
+    start_project/1,
     update_project/1,
     get_builders/0
 ]).
@@ -39,22 +39,13 @@
 %% ============================================================================
 
 %% @doc Stores project in DB and starts project handler process.
--spec create_and_start_project({
-        perforator_ci_types:project_name(), perforator_ci_types:repo_url(),
-        perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
-        perforator_ci_types:polling_strategy(),
-        perforator_ci_types:build_instructions(), list()}) ->
-            ok.
-create_and_start_project({ID, RepoUrl, Branch, RepoBackend, Polling,
-        BuildInstr, Info}) ->
-    % Store and fetch an ID:
-    ok = perforator_ci_db:write_project(
-        #project{id=ID, repo_url=RepoUrl, branch=Branch,
-            repo_backend=RepoBackend, polling=Polling,
-            build_instructions=BuildInstr}),
-    
+-spec start_project(#project{}) -> ok.
+start_project(#project{id=ID, repo_url=RUrl, repo_backend=Mod}=P) ->
+    % Store project in DB:
+    ?error("WTF", [P]),
+    ok = perforator_ci_db:write_project(P),
     % Clone project repo:
-    RepoBackend:clone(RepoUrl, perforator_ci_utils:repo_path(ID)), 
+    Mod:clone(RUrl, perforator_ci_utils:repo_path(ID)), 
     % Check, maybe project is already running, so there is no need to start a
     % new instance:
     case perforator_ci_project:is_project_running(ID) of
@@ -64,20 +55,12 @@ create_and_start_project({ID, RepoUrl, Branch, RepoBackend, Polling,
 
     ok.
 
-%% @doc Updates project info. Updates take place after project handler process
-%% is restarted (dirty hack).
--spec update_project({
-        perforator_ci_types:project_id(),
-        perforator_ci_types:project_name(), perforator_ci_types:repo_url(),
-        perforator_ci_types:branch(), perforator_ci_types:repo_backend(),
-        perforator_ci_types:polling_strategy(),
-        perforator_ci_types:build_instructions(), list()}) -> ok.
-update_project({ID, RepoUrl, Branch, RepoBackend, Polling,
-        BuildInstr, Info}) ->
+%% @doc Updates project info in DB and in project handler.
+-spec update_project(#project{}) -> ok.
+update_project(#project{id=ID}=P) ->
     % Update DB:
-    ok = perforator_ci_db:update_project({ID, RepoUrl, Branch,
-        RepoBackend, Polling, BuildInstr, Info}),
-    % Restart project handler:
+    ok = perforator_ci_db:write_project(P),
+    % Restart project handler, so that changes could happen:
     exit(perforator_ci_project:get_pid(ID), '$restart'),
 
     ok.

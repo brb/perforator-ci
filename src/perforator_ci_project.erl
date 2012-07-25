@@ -111,7 +111,7 @@ init([ProjectID]) ->
 
         % Restore state data (it's safe, because we always create #project
         % entry before starting its handler, see
-        % perforator_ci:create_and_start_project/1.
+        % perforator_ci:start_project/1.
         #project{repo_url=RepoUrl, branch=Branch, repo_backend=RepoBackend,
             polling=Polling}=Project = perforator_ci_db:get_project(ProjectID),
 

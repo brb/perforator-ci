@@ -22,26 +22,16 @@ from_project_new_test() ->
         }
     ">>,
 
-    ?assertEqual(
-        {<<"id">>, "url", "branch", perforator_ci_git, {time, 10},
-            ["one", "two"], []},
+    ?assertMatch(
+        #project{
+            id = <<"id">>,
+            repo_url = "url",
+            branch = "branch",
+            repo_backend = perforator_ci_git,
+            polling = {time, 10},
+            build_instructions = ["one", "two"]
+        },
         from(project_new, dec(JSON))).
-
-from_project_update_test() ->
-    JSON = <<"
-        {
-            \"id\": \"id\",
-            \"branch\" : \"branch\",
-            \"repo_url\" : \"url\",
-            \"build_instructions\" : [ \"one\", \"two\" ],
-            \"polling_strategy\": \"ondemand\"
-        }
-    ">>,
-
-    ?assertEqual(
-        {<<"id">>, "url", "branch", perforator_ci_git, on_demand,
-            ["one", "two"], []},
-        from(project_update, dec(JSON))).
 
 to_build_test() ->
     Data = [{suites, [{<<"test_suite_1">>, [{test_cases,

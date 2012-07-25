@@ -138,8 +138,15 @@ test_real_workflow() ->
     ok = perforator_ci_pubsub:subscribe(perforator_ci_project),
     ok = perforator_ci_pubsub:subscribe(perforator_ci_builder),
 
-    ok = perforator_ci:create_and_start_project({<<"1">>, ?REPO, "origin/master",
-        perforator_ci_git, {time, 50}, ["echo omg"], []}),
+    ok = perforator_ci:start_project(
+        #project{
+            id = <<"1">>,
+            repo_url = ?REPO,
+            branch = "origin/master",
+            repo_backend = perforator_ci_git,
+            polling = {time, 50},
+            build_instructions = ["echo omg"]
+        }),
     timer:sleep(200),
 
     receive M0 ->
@@ -152,9 +159,15 @@ test_real_workflow() ->
         perforator_ci_db:get_build(1)),
 
     ok =
-        perforator_ci:create_and_start_project({<<"2">>, ?REPO,
-            "origin/master", perforator_ci_git, {time, 50},
-                ["fail fail fail"], []}),
+        perforator_ci:start_project(
+            #project{
+                id = <<"2">>,
+                repo_url = ?REPO,
+                branch = "origin/master",
+                repo_backend = perforator_ci_git,
+                polling = {time, 50},
+                build_instructions = ["fail fail fail"]
+            }),
     timer:sleep(300),
 
     ?assertMatch(
