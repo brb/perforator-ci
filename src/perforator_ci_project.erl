@@ -94,10 +94,11 @@ is_project_running(ProjectID) ->
 build_finished(Pid, BuildID, Results, Success) ->
     gen_server:call(Pid, {build_finished, BuildID, Results, Success}).
 
-%% @doc Asks project handler to ask builder to do a build run.
--spec build_now(perforator_ci_types:project_id()) -> ok.
+%% @doc Asks project handler to build the latest commit.
+-spec build_now(perforator_ci_types:project_id()) ->
+        ok | {error, no_new_commits}.
 build_now(ProjectID) ->
-    gen_server:cast(get_pid(ProjectID), build_now).
+    gen_server:call(get_pid(ProjectID), build_now).
 
 %% =============================================================================
 %% gen_server callbacks
@@ -161,6 +162,19 @@ handle_call({build_finished, BuildID, Results, Success}, _,
 
     {reply, ok, State};
 
+handle_call(build_now, _, #state{project_id=ID, repo_backend=Mod, branch=B,
+        last_commit_id=CID}=State) ->
+    Reply =
+        case Mod:check_for_updates(
+                perforator_ci_utils:repo_path(ID), B, CID) of
+            undefined -> {error, no_new_commits} ;
+            NewCID when is_binary(NewCID) ->
+                gen_server:cast(self(), {build, NewCID}),
+                ok
+        end,
+
+    {reply, Reply, State};
+
 handle_call(_, _, State) ->
     {reply, ok, State}.
 
@@ -181,20 +195,6 @@ handle_cast({build, CommitID}, #state{project_id=ID}=State) ->
     ok = perforator_ci_builder:build(Project, Build),
     % Update last commit and build values:
     {noreply, State#state{last_commit_id=CommitID, last_build_id=BuildID}};
-
-%% Build now request:
-handle_cast(build_now, 
-    #state{project_id=ID, repo_backend=Mod, branch=B,
-            last_commit_id=CID}=State) ->
-    CID1 = case Mod:check_for_updates(
-            perforator_ci_utils:repo_path(ID), B, CID) of
-        undefined -> CID ;
-        NewCID when is_binary(NewCID) -> NewCID
-    end,
-
-    gen_server:cast(self(), {build, CID1}),
-
-    {noreply, State};
 
 handle_cast(_, State) ->
     {noreply, State}.

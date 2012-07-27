@@ -176,7 +176,11 @@ to(previous_build, Data) ->
         N when is_integer(N) -> N
     end;
 
-to(build_now, _) -> null.
+to(build_now, Return) ->
+    case Return of
+        ok -> null;
+        {error, no_new_commits} -> throw(no_new_commits)
+    end.
 
 %% ============================================================================
 %% Helpers

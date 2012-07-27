@@ -66,6 +66,7 @@ start_link() ->
 build(Project, Build) ->
     % Pick randomly a builder
     Builder = pick_builder(),
+    % @todo unlink builder
     true = link(global:whereis_name(Builder)), % link for request,
     % all persistent part is built at perforator_ci_project side
     gen_server:call({global, Builder},
@@ -108,6 +109,7 @@ handle_call({build, Project, Build}, {Pid, _},
         #state{build_queue=Q}=State) ->
     % Inserts request to the queue (safe for duplicates):
     Q1 = enqueue({Pid, Project, Build}, Q),
+    % @todo reply build exists
 
     ok = perforator_ci_pubsub:broadcast(perforator_ci_builder,
         {queue_size, {node(), length(Q1)}}),

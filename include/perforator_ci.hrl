@@ -9,12 +9,14 @@
 }).
 
 -record(project_build, {
-    id=0 :: perforator_ci_types:build_id(), % global id, unique
-    local_id=0 :: perforator_ci_types:build_id(), % local (in project) id
-    project_id=0 :: perforator_ci_types:project_id(),
+    id=0 :: perforator_ci_types:build_id(), % unique
+    commit_id :: perorator_ci_types:commit_id(), % secondary index
+    project_id=0 :: perforator_ci_types:project_id(), % secondary index
+    local_id=0 :: perforator_ci_types:build_id(), % id in a project scope
+
+    state=pending :: finished | failed | pending,
 
     timestamp :: perforator_ci_types:timestamp(),
-    commit_id :: perorator_ci_types:commit_id(), % most likely unique
 
     info=[] :: list(), % @todo specify
     finished=false :: boolean() | failure
@@ -91,4 +93,3 @@
             end
         end
     }).
-

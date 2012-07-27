@@ -6,17 +6,15 @@
     project_id/0,
     project_info/0,
 
-
-
     polling_strategy/0,
     build_instructions/0,
-
     repo_url/0,
     branch/0,
     repo_backend/0,
 
     build_id/0,
     build_local_id/0,
+
     commit_id/0,
     timestamp/0,
 

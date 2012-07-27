@@ -45,40 +45,37 @@ test_create_build() ->
         #project_build{id=1, local_id=1},
         perforator_ci_db:create_build({42, 123, <<"cid0">>, []})),
     ?assertMatch(
-        #project_build{id=2, local_id=2},
-        perforator_ci_db:create_build({42, 123, <<"cid1">>, []})),
+        #project_build{id=2, local_id=1},
+        perforator_ci_db:create_build({666, 123, <<"cid1">>, []})),
     ?assertMatch(
-        #project_build{id=3, local_id=1},
-        perforator_ci_db:create_build({666, 123, <<"cid0">>, []})),
-    ?assertMatch(
-        #project_build{id=4, local_id=2},
-        perforator_ci_db:create_build({666, 123, <<"cid3">>, []})),
+        #project_build{id=3, local_id=2},
+        perforator_ci_db:create_build({42, 123, <<"cid2">>, []})),
 
     ?assertMatch(
-        3,
-        perforator_ci_db:get_previous_build_id(4)),
+        1,
+        perforator_ci_db:get_previous_build_id(3)),
     ?assertMatch(
         undefined,
-        perforator_ci_db:get_previous_build_id(3)),
+        perforator_ci_db:get_previous_build_id(1)),
 
     ?assertMatch(
-        #project_build{commit_id= <<"cid1">>},
+        #project_build{commit_id= <<"cid2">>},
         perforator_ci_db:get_last_build(42)),
     ?assertMatch(
-        [#project_build{id=3, local_id=1}, #project_build{id=4, local_id=2}],
+        [#project_build{id=2}],
         perforator_ci_db:get_unfinished_builds(666)),
 
-    ?assertEqual(ok, perforator_ci_db:finish_build(3, [omg], false)),
+    ?assertEqual(ok, perforator_ci_db:finish_build(2, [omg], false)),
     ?assertMatch(
-        #project_build{id=3, local_id=1, finished=failure, info=[omg]},
-        perforator_ci_db:get_build(3)),
+        #project_build{id=2, finished=failure, info=[omg]},
+        perforator_ci_db:get_build(2)),
     ?assertMatch(
-        [#project_build{id=4}],
+        [],
         perforator_ci_db:get_unfinished_builds(666)).
 
 test_get_test_builds() ->
         ?assertMatch(
-            #project_build{id=1, local_id=1},
+            #project_build{id=1},
             perforator_ci_db:create_build({42, 123, <<"cid0">>, []})),
         Data = [{suites, [{<<"test_suite_1">>, [{test_cases,
             [{<<"test_case_1">>, [

@@ -1,6 +1,6 @@
-%% `perforator_ci` is a continious performance integration tool which
+%% @doc `perforator_ci` is a continious performance integration tool which
 %% uses `perforator` output statistics. It can nicely track and show
-%% performance tests degradations.
+%% performance tests degradation.
 %%
 %% `perforator_ci` consists of 3 "major" objects:
 %% * projects (`perforator_ci_project`)
@@ -16,8 +16,6 @@
 %%
 %% Project keeps track of build results and publishes them to web backend (on
 %% demand).
-%%
-%% That's it. Want to sleep.
 %%
 %% @author Martynas <martynasp@gmail.com>
 
