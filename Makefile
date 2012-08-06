@@ -13,7 +13,6 @@ deps:
 
 compile:
 	$(REBAR) compile
-	make -C priv/js build
 
 distclean:
 	$(REBAR) delete-deps
